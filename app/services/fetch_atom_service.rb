@@ -4,7 +4,8 @@ class FetchAtomService < BaseService
   include JsonLdHelper
 
   def call(url)
-    return if url.blank?
+    # Disabled
+    return nil
 
     result = process(url)
 
