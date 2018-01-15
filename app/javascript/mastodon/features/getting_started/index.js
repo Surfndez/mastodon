@@ -62,10 +62,6 @@ export default class GettingStarted extends ImmutablePureComponent {
       if (!columns.find(item => item.get('id') === 'COMMUNITY')) {
         navItems.push(<ColumnLink key='2' icon='users' text={intl.formatMessage(messages.community_timeline)} to='/timelines/public/local' />);
       }
-
-      if (!columns.find(item => item.get('id') === 'PUBLIC')) {
-        navItems.push(<ColumnLink key='3' icon='globe' text={intl.formatMessage(messages.public_timeline)} to='/timelines/public' />);
-      }
     }
 
     navItems.push(
@@ -104,7 +100,7 @@ export default class GettingStarted extends ImmutablePureComponent {
             <FormattedMessage
               id='getting_started.open_source_notice'
               defaultMessage='Mastodon is open source software. You can contribute or report issues on GitHub at {github}.'
-              values={{ github: <a href='https://github.com/tootsuite/mastodon' rel='noopener' target='_blank'>tootsuite/mastodon</a> }}
+              values={{ github: <a href='https://github.com/pc/mastodon' rel='noopener' target='_blank'>pc/mastodon</a> }}
             />
           </p>
         </div>

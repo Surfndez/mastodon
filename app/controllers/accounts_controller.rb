@@ -20,19 +20,6 @@ class AccountsController < ApplicationController
         @statuses        = cache_collection(@statuses, Status)
         @next_url        = next_url unless @statuses.empty?
       end
-
-      format.atom do
-        @entries = @account.stream_entries.where(hidden: false).with_includes.paginate_by_max_id(20, params[:max_id], params[:since_id])
-        render xml: OStatus::AtomSerializer.render(OStatus::AtomSerializer.new.feed(@account, @entries.reject { |entry| entry.status.nil? }))
-      end
-
-      format.json do
-        skip_session!
-
-        render_cached_json(['activitypub', 'actor', @account.cache_key], content_type: 'application/activity+json') do
-          ActiveModelSerializers::SerializableResource.new(@account, serializer: ActivityPub::ActorSerializer, adapter: ActivityPub::Adapter)
-        end
-      end
     end
   end
 

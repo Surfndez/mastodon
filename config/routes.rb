@@ -17,8 +17,6 @@ Rails.application.routes.draw do
     controllers authorizations: 'oauth/authorizations', authorized_applications: 'oauth/authorized_applications'
   end
 
-  get '.well-known/host-meta', to: 'well_known/host_meta#show', as: :host_meta, defaults: { format: 'xml' }
-  get '.well-known/webfinger', to: 'well_known/webfinger#show', as: :webfinger
   get 'manifest', to: 'manifests#show', defaults: { format: 'json' }
   get 'intent', to: 'intents#show'
 
@@ -36,37 +34,17 @@ Rails.application.routes.draw do
   get '/users/:username', to: redirect('/@%{username}'), constraints: lambda { |req| req.format.nil? || req.format.html? }
 
   resources :accounts, path: 'users', only: [:show], param: :username do
-    resources :stream_entries, path: 'updates', only: [:show] do
-      member do
-        get :embed
-      end
-    end
-
-    get :remote_follow,  to: 'remote_follow#new'
-    post :remote_follow, to: 'remote_follow#create'
-
-    resources :statuses, only: [:show] do
-      member do
-        get :activity
-        get :embed
-      end
-    end
-
+    resources :statuses, only: [:show]
     resources :followers, only: [:index], controller: :follower_accounts
     resources :following, only: [:index], controller: :following_accounts
     resource :follow, only: [:create], controller: :account_follow
     resource :unfollow, only: [:create], controller: :account_unfollow
-    resource :outbox, only: [:show], module: :activitypub
-    resource :inbox, only: [:create], module: :activitypub
   end
-
-  resource :inbox, only: [:create], module: :activitypub
 
   get '/@:username', to: 'accounts#show', as: :short_account
   get '/@:username/with_replies', to: 'accounts#show', as: :short_account_with_replies
   get '/@:username/media', to: 'accounts#show', as: :short_account_media
   get '/@:account_username/:id', to: 'statuses#show', as: :short_account_status
-  get '/@:account_username/:id/embed', to: 'statuses#embed', as: :embed_short_account_status
 
   namespace :settings do
     resource :profile, only: [:show, :update]
@@ -87,8 +65,6 @@ Rails.application.routes.draw do
       resource :confirmation, only: [:new, :create]
     end
 
-    resource :follower_domains, only: [:show, :update]
-
     resources :applications, except: [:edit] do
       member do
         post :regenerate
@@ -96,20 +72,15 @@ Rails.application.routes.draw do
     end
 
     resource :delete, only: [:show, :destroy]
-    resource :migration, only: [:show, :update]
-
     resources :sessions, only: [:destroy]
   end
 
   resources :media,  only: [:show]
   resources :tags,   only: [:show]
-  resources :emojis, only: [:show]
   resources :invites, only: [:index, :create, :destroy]
 
   get '/media_proxy/:id/(*any)', to: 'media_proxy#show', as: :media_proxy
 
-  # Remote follow
-  resource :authorize_follow, only: [:show, :create]
   resource :share, only: [:show, :create]
 
   namespace :admin do
@@ -178,19 +149,6 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    # PubSubHubbub outgoing subscriptions
-    resources :subscriptions, only: [:show]
-    post '/subscriptions/:id', to: 'subscriptions#update'
-
-    # PubSubHubbub incoming subscriptions
-    post '/push', to: 'push#update', as: :push
-
-    # Salmon
-    post '/salmon/:id', to: 'salmon#update', as: :salmon
-
-    # OEmbed
-    get '/oembed', to: 'oembed#show', as: :oembed
-
     # JSON / REST API
     namespace :v1 do
       resources :statuses, only: [:create, :show, :destroy] do
