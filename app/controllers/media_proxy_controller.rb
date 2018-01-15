@@ -3,6 +3,8 @@
 class MediaProxyController < ApplicationController
   include RoutingHelper
 
+  before_action :authenticate_user!
+
   def show
     RedisLock.acquire(lock_options) do |lock|
       if lock.acquired?

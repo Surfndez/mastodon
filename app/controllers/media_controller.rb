@@ -3,6 +3,7 @@
 class MediaController < ApplicationController
   include Authorization
 
+  before_action :authenticate_user!
   before_action :verify_permitted_status
 
   def show

@@ -7,6 +7,7 @@ module AccountControllerConcern
 
   included do
     layout 'public'
+    before_action :authenticate_user!
     before_action :set_account
     before_action :check_account_suspension
   end

@@ -3,6 +3,7 @@
 class TagsController < ApplicationController
   before_action :set_body_classes
   before_action :set_instance_presenter
+  before_action :authenticate_user!
 
   def show
     @tag = Tag.find_by!(name: params[:id].downcase)

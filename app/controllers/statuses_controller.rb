@@ -5,6 +5,7 @@ class StatusesController < ApplicationController
 
   layout 'public'
 
+  before_action :authenticate_user!
   before_action :set_account
   before_action :set_status
   before_action :check_account_suspension
