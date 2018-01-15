@@ -21,3 +21,10 @@
 @import 'mastodon/tables';
 @import 'mastodon/admin';
 @import 'mastodon/rtl';
+
+.landing-page {
+  .footer-links {
+    padding-top: 30px;
+    text-align: left;
+  }
+}

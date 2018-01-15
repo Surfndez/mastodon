@@ -41,10 +41,6 @@
           %span= t 'about.status_count_before'
           %strong= number_with_delimiter @instance_presenter.status_count
           %span= t 'about.status_count_after'
-        .section
-          %span= t 'about.domain_count_before'
-          %strong= number_with_delimiter @instance_presenter.domain_count
-          %span= t 'about.domain_count_after'
       = render 'contact', contact: @instance_presenter
 
   .extended-description
