@@ -134,7 +134,6 @@ class Status < ApplicationRecord
     CustomEmoji.from_text([spoiler_text, text].join(' '), account.domain)
   end
 
-  after_create_commit :store_uri, if: :local?
   after_create_commit :update_statistics, if: :local?
 
   around_create Mastodon::Snowflake::Callbacks
@@ -263,10 +262,6 @@ class Status < ApplicationRecord
   end
 
   private
-
-  def store_uri
-    update_attribute(:uri, ActivityPub::TagManager.instance.uri_for(self)) if uri.nil?
-  end
 
   def prepare_contents
     text&.strip!
