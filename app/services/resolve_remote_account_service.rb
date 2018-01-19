@@ -12,13 +12,13 @@ class ResolveRemoteAccountService < BaseService
   # @param [String] uri User URI in the form of username@domain
   # @return [Account]
   def call(uri, update_profile = true, redirected = nil)
-    # Disabled
-    return nil
-
     @username, @domain = uri.split('@')
     @update_profile    = update_profile
 
     return Account.find_local(@username) if TagManager.instance.local_domain?(@domain)
+
+    # Disabled
+    return nil
 
     @account = Account.find_remote(@username, @domain)
 
